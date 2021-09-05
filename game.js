@@ -7,6 +7,12 @@ var gamePattern = [];
 
 var userClickedPattern = [];
 
+$("div.smallbtn").on("click", function () {
+  if (gameStarted === false) {
+    initialise();
+  }
+});
+
 $("div.btn").on("click", function () {
   var userChosenColor = this.id;
 
@@ -34,13 +40,17 @@ $("div.btn").on("click", function () {
 
 $("body").on("keydown", function () {
   if (gameStarted === false) {
-    gamePattern = [];
-    userClickedPattern = [];
-    level = 0;
-    gameStarted = true;
-    nextSequence();
+    initialise();
   }
 });
+
+function initialise() {
+  gamePattern = [];
+  userClickedPattern = [];
+  level = 0;
+  gameStarted = true;
+  nextSequence();
+}
 
 function validateSequence() {
   if (userClickedPattern.length > gamePattern.length) return false;
