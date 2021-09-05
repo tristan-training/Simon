@@ -1,4 +1,5 @@
 var gameStarted = false;
+var ignoreButton = false;
 var buttonColors = ["red", "blue", "green", "yellow"];
 
 var level = 0;
@@ -14,27 +15,31 @@ $("div.smallbtn").on("click", function () {
 });
 
 $("div.btn").on("click", function () {
-  var userChosenColor = this.id;
+  if (ignoreButton === false) {
+    var userChosenColor = this.id;
 
-  userClickedPattern.push(userChosenColor);
-  playSound(userChosenColor);
-  animatePress(userChosenColor);
-  if (validateSequence() === true) {
-    if (userClickedPattern.length === gamePattern.length) {
+    userClickedPattern.push(userChosenColor);
+    playSound(userChosenColor);
+    animatePress(userChosenColor);
+    if (validateSequence() === true) {
+      if (userClickedPattern.length === gamePattern.length) {
+        ignoreButton = true;
+        setTimeout(function () {
+          nextSequence();
+          userClickedPattern = [];
+          ignoreButton = false;
+        }, 1000);
+      }
+    } else {
+      gameStarted = false;
+      playSound("wrong");
+      $("#level-title").text("Game Over. Press A Key to Start");
+      $("body").addClass("game-over");
+
       setTimeout(function () {
-        nextSequence();
-        userClickedPattern = [];
-      }, 1000);
+        $("body").removeClass("game-over");
+      }, 200);
     }
-  } else {
-    gameStarted = false;
-    playSound("wrong");
-    $("#level-title").text("Game Over. Press A Key to Start");
-    $("body").addClass("game-over");
-
-    setTimeout(function () {
-      $("body").removeClass("game-over");
-    }, 200);
   }
 });
 
@@ -45,6 +50,7 @@ $("body").on("keydown", function () {
 });
 
 function initialise() {
+  ignoreButton = false;
   gamePattern = [];
   userClickedPattern = [];
   level = 0;
